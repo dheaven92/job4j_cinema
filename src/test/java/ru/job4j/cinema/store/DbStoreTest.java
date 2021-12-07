@@ -12,7 +12,7 @@ import static org.hamcrest.Matchers.is;
 public class DbStoreTest {
 
     @Test
-    public void testFindAllTicketsBySessionId() {
+    public void whenFindAllTicketsBySessionId() {
         Account account = DbStore.instanceOf()
                 .saveAccount(new Account(0, "Anna", "a@mail.com", "111"));
         Ticket ticket1 = new Ticket(1, 1, 1, account.getId());
@@ -25,7 +25,7 @@ public class DbStoreTest {
     }
 
     @Test
-    public void testSaveTicket() {
+    public void whenSaveTicket() {
         Account account = DbStore.instanceOf()
                 .saveAccount(new Account(0, "Bob", "b@mail.com", "222"));
         Ticket ticket = DbStore.instanceOf().saveTicket(new Ticket(1, 2, 3, account.getId()));
