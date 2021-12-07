@@ -4,4 +4,41 @@
 
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
+
+  <servlet>
+    <servlet-name>HallServlet</servlet-name>
+    <servlet-class>ru.job4j.cinema.servlet.HallServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>HallServlet</servlet-name>
+    <url-pattern>/hall</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>OrderServlet</servlet-name>
+    <servlet-class>ru.job4j.cinema.servlet.OrderServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>OrderServlet</servlet-name>
+    <url-pattern>/order</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>SessionServlet</servlet-name>
+    <servlet-class>ru.job4j.cinema.servlet.SessionServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SessionServlet</servlet-name>
+    <url-pattern>/sessions</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>AccountServlet</servlet-name>
+    <servlet-class>ru.job4j.cinema.servlet.AccountServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AccountServlet</servlet-name>
+    <url-pattern>/account</url-pattern>
+  </servlet-mapping>
+
 </web-app>

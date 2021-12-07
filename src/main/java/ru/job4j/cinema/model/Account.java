@@ -9,6 +9,10 @@ public class Account {
     private String email;
     private String phone;
 
+    public Account() {
+
+    }
+
     public Account(int id, String username, String email, String phone) {
         this.id = id;
         this.username = username;
@@ -46,6 +50,16 @@ public class Account {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    @Override
+    public String toString() {
+        return "Account{"
+                + "id=" + id
+                + ", username='" + username + '\''
+                + ", email='" + email + '\''
+                + ", phone='" + phone + '\''
+                + '}';
     }
 
     @Override

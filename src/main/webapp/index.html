@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Кино</title>
+</head>
+<body>
+<div class="container">
+    <div class="row pt-3">
+        <h2>Бронирование мест на сеанс</h2>
+    </div>
+    <div class="row pt-1">
+        <div id="error" class="alert alert-danger" style="display: none">
+            Пожалуйста, выберите место
+        </div>
+    </div>
+    <div class="row">
+        <label>Выберите сеанс:</label>
+        <select id="sessions" class="form-control">
+        </select>
+    </div>
+    <div class="row pt-2">
+        <table id="table" class="table table-bordered">
+            <thead>
+            <tr>
+                <th style="width: 120px;">Ряд / Место</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th>1</th>
+                <td><input type="radio" name="place" value="11"> Ряд 1, Место 1</td>
+                <td><input type="radio" name="place" value="12"> Ряд 1, Место 2</td>
+                <td><input type="radio" name="place" value="13"> Ряд 1, Место 3</td>
+            </tr>
+            <tr>
+                <th>2</th>
+                <td><input type="radio" name="place" value="21"> Ряд 2, Место 1</td>
+                <td><input type="radio" name="place" value="22"> Ряд 2, Место 2</td>
+                <td><input type="radio" name="place" value="23"> Ряд 2, Место 3</td>
+            </tr>
+            <tr>
+                <th>3</th>
+                <td><input type="radio" name="place" value="31"> Ряд 3, Место 1</td>
+                <td><input type="radio" name="place" value="32"> Ряд 3, Место 2</td>
+                <td><input type="radio" name="place" value="33"> Ряд 3, Место 3</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="row float-right">
+        <button id="order" type="button" class="btn btn-success">Оплатить</button>
+    </div>
+</div>
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<!-- Custom JavaScript -->
+<script>
+    const url = 'http://localhost:8080/cinema';
+    let userPlace;
+    let userSession;
+
+    function updateTable() {
+        $('#table tbody tr td input').each((i, input) => {
+            $(input)
+                .attr('name', 'place')
+                .prop('checked', false)
+                .prop('disabled', false);
+        });
+        $.ajax({
+            type: 'GET',
+            url: `${url}/hall?sessionId=${userSession}`,
+            dataType: 'json'
+        }).done(tickets => {
+            for (const ticket of tickets) {
+                const place = ticket.row + "" + ticket.cell;
+                $(`#table tbody tr td input[value=${place}]`)
+                    .removeAttr("name")
+                    .prop('checked', true)
+                    .prop('disabled', true);
+            }
+        }).fail(e => {
+            console.log(e);
+        });
+        if (userPlace !== undefined) {
+            $(userPlace).prop('checked', true);
+        }
+    }
+
+    function getSessions() {
+        $.ajax({
+            type: 'GET',
+            url: `${url}/sessions`,
+            dataType: 'json'
+        }).done(function (sessions) {
+            for (let session of sessions) {
+                $('#sessions').append(`<option value="${session.id}">${session.name}</option>`)
+            }
+            userSession = $("#sessions option:checked").val();
+            updateTable();
+        }).fail(function (err) {
+            console.log(err);
+        });
+    }
+
+    $(document).ready(() => {
+        getSessions();
+        setInterval(() => {
+            updateTable();
+        }, 10000)
+    });
+
+    $('#table tbody tr td input[name="place"]').change(function (e) {
+        userPlace = this;
+        $("#error").hide();
+    });
+
+    $('#sessions').change(function (e) {
+        userSession = $(this).val();
+        userPlace = undefined;
+        updateTable();
+    });
+
+    $("#order").click(e => {
+        if (userPlace === undefined) {
+            $("#error").show();
+        } else {
+            const row = $(userPlace).val().split('')[0];
+            const cell = $(userPlace).val().split('')[1];
+            window.location.href = `${url}/order?sessionId=${userSession}&row=${row}&cell=${cell}`;
+        }
+    });
+</script>
+</body>
+</html>

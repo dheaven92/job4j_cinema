@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>Кино | Бронирование заказа</title>
+</head>
+<body>
+<div class="container">
+    <div class="row pt-3">
+        <h3>
+            Вы выбрали ряд <span id="row"></span> место <span id="cell"></span>, Сумма : 500 рублей.
+        </h3>
+    </div>
+    <div class="row pt-1">
+        <div id="error" class="alert alert-danger" style="display: none">
+            Не удалось забронировать место!
+        </div>
+    </div>
+    <div class="row">
+        <form id="form">
+            <div class="form-group">
+                <label for="username">ФИО</label>
+                <input id="username" type="text" class="form-control" placeholder="ФИО" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input id="email" type="email" class="form-control" placeholder="Email" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Номер телефона</label>
+                <input id="phone" type="text" class="form-control" placeholder="Номер телефона" required>
+            </div>
+            <button type="submit" class="btn btn-success">Забронировать</button>
+        </form>
+    </div>
+</div>
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+<!-- Custom JavaScript -->
+<script>
+    const url = 'http://localhost:8080/cinema';
+    let sessionId;
+    let row;
+    let cell;
+
+    $(document).ready(() => {
+        const params = {};
+        window.location.search
+            .replace(/[?&]+([^=&]+)=([^&]*)/gi, function (str, key, value) {
+                    params[key] = value;
+                }
+            );
+        sessionId = params['sessionId'];
+        row = params['row'];
+        cell = params['cell'];
+
+        if (sessionId === undefined || row === undefined || cell === undefined) {
+            window.location.href = `${url}`;
+        }
+
+        $("#row").text(row);
+        $("#cell").text(cell);
+    });
+
+    function makeOrder(accountId) {
+        $.ajax({
+            type: 'POST',
+            url: `${url}/hall`,
+            data: JSON.stringify({
+                sessionId,
+                row,
+                cell,
+                accountId
+            }),
+            dataType: 'json'
+        }).done(data => {
+            window.location.href = `${url}/success.html`;
+        }).fail(err => {
+            console.log(err);
+            $("#error").show();
+        });
+    }
+
+    $("#form").submit(e => {
+        e.preventDefault();
+        const username = $("#username").val();
+        const email = $("#email").val();
+        const phone = $("#phone").val();
+
+        if (username !== undefined && email !== undefined && phone !== undefined) {
+            $.ajax({
+                type: 'POST',
+                url: `${url}/account`,
+                data: JSON.stringify({
+                    username,
+                    email,
+                    phone
+                }),
+                dataType: 'json'
+            }).done(account => {
+                makeOrder(account.id);
+            }).fail(function (err) {
+                console.log(err);
+                $("#error").show();
+            });
+        }
+    });
+</script>
+</body>
+</html>

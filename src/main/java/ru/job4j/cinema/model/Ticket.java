@@ -6,14 +6,18 @@ public class Ticket {
 
     private int id;
     private int sessionId;
-    private int rowId;
-    private int cellId;
+    private int row;
+    private int cell;
     private int accountId;
 
-    public Ticket(int sessionId, int rowId, int cellId, int accountId) {
+    public Ticket() {
+
+    }
+
+    public Ticket(int sessionId, int row, int cell, int accountId) {
         this.sessionId = sessionId;
-        this.rowId = rowId;
-        this.cellId = cellId;
+        this.row = row;
+        this.cell = cell;
         this.accountId = accountId;
     }
 
@@ -33,20 +37,20 @@ public class Ticket {
         this.sessionId = sessionId;
     }
 
-    public int getRowId() {
-        return rowId;
+    public int getRow() {
+        return row;
     }
 
-    public void setRowId(int rowId) {
-        this.rowId = rowId;
+    public void setRow(int row) {
+        this.row = row;
     }
 
-    public int getCellId() {
-        return cellId;
+    public int getCell() {
+        return cell;
     }
 
-    public void setCellId(int cellId) {
-        this.cellId = cellId;
+    public void setCell(int cell) {
+        this.cell = cell;
     }
 
     public int getAccountId() {
@@ -55,6 +59,17 @@ public class Ticket {
 
     public void setAccountId(int accountId) {
         this.accountId = accountId;
+    }
+
+    @Override
+    public String toString() {
+        return "Ticket{"
+                + "id=" + id
+                + ", sessionId=" + sessionId
+                + ", row=" + row
+                + ", cell=" + cell
+                + ", accountId=" + accountId
+                + '}';
     }
 
     @Override
@@ -67,12 +82,12 @@ public class Ticket {
         }
         Ticket ticket = (Ticket) o;
         return sessionId == ticket.sessionId
-                && rowId == ticket.rowId
-                && cellId == ticket.cellId;
+                && row == ticket.row
+                && cell == ticket.cell;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sessionId, rowId, cellId);
+        return Objects.hash(sessionId, row, cell);
     }
 }
