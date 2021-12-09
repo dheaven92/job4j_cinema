@@ -9,5 +9,8 @@
 - Выбор сеанса и места в зале
 - Бронирование места
 
-![ScreenShot](images/screen1.png)
-![ScreenShot](images/screen2.png)
+<img src="https://raw.githubusercontent.com/dheaven92/job4j_cinema/master/images/screen1.png" width="800px">
+<br>
+<img src="https://raw.githubusercontent.com/dheaven92/job4j_cinema/master/images/screen2.png" width="800px">
+<br>
+<img src="https://raw.githubusercontent.com/dheaven92/job4j_cinema/master/images/screen3.png" width="800px">   
